@@ -149,7 +149,7 @@ class TestProductModel(unittest.TestCase):
         """It should list all products"""
         products = Product.all()
         self.assertEqual(len(products), 0)
-        for i in range(5):
+        for _ in range(5):
             product = ProductFactory()
             product.create()
         products = Product.all()
@@ -158,7 +158,7 @@ class TestProductModel(unittest.TestCase):
     def test_find_a_product_by_name(self):
         """It should find a product by name"""
         product_names_cnt_dict = {}
-        for i in range(5):
+        for _ in range(5):
             product = ProductFactory()
             product.create()
             product_names_cnt_dict[product.name] = product_names_cnt_dict.get(product.name, 0) + 1
@@ -168,3 +168,17 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(found_products.count(), product_names_cnt_dict[product_name])
         for product in found_products:
             self.assertEqual(product.name, product_name)
+
+    def test_find_a_product_by_category(self):
+        """It should find a product by category"""
+        product_categories_cnt_dict = {}
+        for _ in range(10):
+            product = ProductFactory()
+            product.create()
+            product_categories_cnt_dict[product.category] = product_categories_cnt_dict.get(product.category, 0) + 1
+        products = Product.all()
+        product_category = products[0].category
+        found_products = Product.find_by_category(product_category)
+        self.assertEqual(found_products.count(), product_categories_cnt_dict[product_category])
+        for product in found_products:
+            self.assertEqual(product.category, product_category)
